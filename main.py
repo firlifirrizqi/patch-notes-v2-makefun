@@ -14,16 +14,27 @@ ENTRY = (
 
 OUTPUT_DIR = "/output"
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "entry.txt")
+MAX_CHARS = 160
+
+
+def verify_output():
+    """Read back the written file and confirm it matches ENTRY exactly."""
+    with open(OUTPUT_FILE, "r", encoding="utf-8") as handle:
+        written = handle.read().rstrip("\n")
+    assert written == ENTRY.strip(), "entry.txt content does not match ENTRY"
+    return written
 
 
 def main():
     line = ENTRY.strip()
-    assert 1 <= len(line) <= 160, "entry must be 1-160 characters"
+    assert 1 <= len(line) <= MAX_CHARS, "entry must be 1-160 characters"
     assert "\n" not in line, "entry must be a single line"
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as handle:
         handle.write(line + "\n")
     print(f"Wrote {len(line)} characters to {OUTPUT_FILE}")
+    verify_output()
+    print(f"Verified: {OUTPUT_FILE} matches ENTRY ({len(line)} characters)")
 
 
 if __name__ == "__main__":
